@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MANA.com｜内装・内装コンサルティング｜福岡</title>
+<meta name="description" content="MANA.com（真名子泰久）は福岡を拠点に、一般宅・法人物件の内装工事と内装コンサルティングを行う内装業です。まだ名づけられていない空間に、その場所の「真名」をつけます。">
+<meta name="theme-color" content="#16181A">
+<meta property="og:title" content="MANA.com｜内装・内装コンサルティング">
+<meta property="og:description" content="仮名のままの部屋を、真名にする。福岡の内装業 MANA.com。">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2316181A'/%3E%3Cpath d='M6 22V10l10 8 10-8v12' fill='none' stroke='%239A3B24' stroke-width='2'/%3E%3C/svg%3E">
+
+<style>
+/* =========================================================
+   MANA.com — 内装・内装コンサルティング
+   Concept : 仮名 → 真名 ／ 墨出し（すみだし）
+   Tokens  : 墨 sumi / 生成 kinu / 藍墨 aizumi / 檜 hinoki / 弁柄 bengara
+   ========================================================= */
+:root{
+  --sumi:#16181A;
+  --sumi-80:rgba(22,24,26,.80);
+  --sumi-55:rgba(22,24,26,.55);
+  --sumi-14:rgba(22,24,26,.14);
+  --kinu:#E9E5DD;
+  --shironeri:#F5F2EC;
+  --aizumi:#2E4A5C;
+  --aizumi-30:rgba(46,74,92,.30);
+  --hinoki:#C2A079;
+  --bengara:#9A3B24;
+
+  --disp:"Shippori Mincho B1", serif;
+  --body:"Zen Kaku Gothic New", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, monospace;
+
+  --rail:64px;
+  --pad:clamp(20px,5vw,64px);
+  --maxw:1220px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--kinu);color:var(--sumi);
+  font-family:var(--body);font-weight:400;line-height:1.95;
+  font-size:clamp(14px,.92vw + 10px,16px);
+  letter-spacing:.04em;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,p,figure,dl,dd{margin:0}
+ul{margin:0;padding:0;list-style:none}
+:focus-visible{outline:2px solid var(--bengara);outline-offset:3px}
+
+/* ---------- 共通パーツ ---------- */
+.wrap{width:min(100% - var(--pad)*2, var(--maxw));margin-inline:auto}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.sec{position:relative;padding:clamp(84px,12vw,160px) 0}
+.sec--dark{background:var(--sumi);color:var(--kinu)}
+.sec--dark .lead{color:var(--kinu)}
+
+.sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:clamp(38px,5vw,64px)}
+.sec-head::after{content:"";flex:1;height:1px;background:currentColor;opacity:.2}
+.sec-num{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--bengara)}
+.sec--dark .sec-num{color:var(--hinoki)}
+.sec-ttl{font-family:var(--disp);font-weight:700;font-size:clamp(22px,2.4vw,30px);letter-spacing:.1em}
+.sec-en{font-family:var(--mono);font-size:10px;letter-spacing:.22em;opacity:.5;text-transform:uppercase}
+
+.lead{font-family:var(--disp);font-weight:500;line-height:2.2;
+  font-size:clamp(17px,1.9vw,23px);letter-spacing:.08em}
+.txt{max-width:62ch;color:var(--sumi-80);font-size:.94em}
+.sec--dark .txt{color:rgba(233,229,221,.72)}
+.txt + .txt{margin-top:1.4em}
+
+/* ---------- 左端の寸法レール（スクロール進捗） ---------- */
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail);z-index:40;pointer-events:none;
+  display:none;mix-blend-mode:normal}
+.rail::before{content:"";position:absolute;left:31px;top:0;bottom:0;width:1px;background:var(--sumi-14)}
+.rail-ink{position:absolute;left:30px;top:0;width:3px;height:0;background:var(--bengara);transition:height .12s linear}
+.rail-tick{position:absolute;left:22px;width:19px;height:1px;background:var(--sumi-14)}
+.rail-lab{position:absolute;left:40px;transform:translateY(-50%) rotate(90deg);transform-origin:left center;
+  font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--sumi-55);white-space:nowrap}
+@media (min-width:1080px){.rail{display:block}
+  body{padding-left:var(--rail)}
+}
+
+/* ---------- ヘッダー ---------- */
+.hd{position:fixed;top:0;left:0;right:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:16px var(--pad);
+  transition:background .5s var(--ease),border-color .5s var(--ease),color .5s var(--ease);
+  border-bottom:1px solid transparent;color:var(--kinu)}
+@media (min-width:1080px){.hd{left:var(--rail)}}
+.hd.is-solid{background:rgba(233,229,221,.88);backdrop-filter:blur(10px);
+  border-bottom-color:var(--sumi-14);color:var(--sumi)}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:13px;letter-spacing:.14em}
+.brand svg{width:26px;height:26px;flex:none}
+.brand b{font-weight:500}
+.brand span{opacity:.55;font-size:10px;letter-spacing:.2em}
+.nav{display:none;gap:26px}
+@media (min-width:860px){.nav{display:flex}}
+.nav a{font-family:var(--mono);font-size:11px;letter-spacing:.16em;position:relative;padding:4px 0;opacity:.85}
+.nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--bengara);
+  transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.nav a:hover{opacity:1}
+.nav a:hover::after{transform:scaleX(1)}
+
+/* ---------- ヒーロー ---------- */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;
+  background:var(--sumi);color:var(--kinu);overflow:hidden}
+.hero-bg{position:absolute;inset:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;opacity:0;
+  filter:grayscale(.55) contrast(1.06) brightness(.62);
+  transform:scale(1.08);
+  animation:heroIn 2.6s var(--ease) .5s forwards}
+@keyframes heroIn{to{opacity:1;transform:scale(1)}}
+.hero-bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(22,24,26,.72) 0%,rgba(22,24,26,.32) 42%,rgba(22,24,26,.92) 100%)}
+.hero-plan{position:absolute;inset:0;width:100%;height:100%}
+.hero-plan path,.hero-plan line,.hero-plan rect{
+  stroke-dasharray:var(--len,1400);stroke-dashoffset:var(--len,1400);
+  animation:draw 2.2s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.hero-plan .dot{opacity:0;animation:pop .6s var(--ease) forwards}
+@keyframes pop{to{opacity:1}}
+
+.hero-inner{position:relative;width:100%;padding:0 var(--pad) clamp(46px,7vw,80px)}
+.hero-grid{width:min(100%,var(--maxw));margin-inline:auto;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap}
+.hero-ttl{
+  font-family:var(--disp);font-weight:800;
+  writing-mode:vertical-rl;font-feature-settings:"vpal" 1;
+  font-size:clamp(34px,6.2vw,68px);letter-spacing:.14em;line-height:1.28;
+  height:min(58svh,460px);margin-bottom:6px}
+.hero-ttl em{font-style:normal;color:var(--hinoki)}
+.hero-ttl .seal{color:var(--bengara);text-shadow:0 0 22px rgba(154,59,36,.5)}
+.hero-side{max-width:420px;padding-bottom:8px}
+.hero-side .mono{color:var(--hinoki);margin-bottom:14px}
+.hero-side p{color:rgba(233,229,221,.78);font-size:.9em;line-height:2.1}
+.hero-meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:22px;
+  padding-top:18px;border-top:1px solid rgba(233,229,221,.2)}
+.hero-meta span{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:rgba(233,229,221,.6)}
+.scroller{position:absolute;right:var(--pad);bottom:0;display:none;align-items:center;gap:10px;
+  writing-mode:vertical-rl;font-family:var(--mono);font-size:10px;letter-spacing:.24em;
+  color:rgba(233,229,221,.55);padding-bottom:0}
+@media (min-width:860px){.scroller{display:flex}}
+.scroller::after{content:"";width:1px;height:74px;background:linear-gradient(var(--hinoki),transparent);
+  animation:slide 2.4s ease-in-out infinite}
+@keyframes slide{0%{transform:scaleY(0);transform-origin:top}
+  50%{transform:scaleY(1);transform-origin:top}
+  51%{transform:scaleY(1);transform-origin:bottom}
+  100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- 由来 ---------- */
+.origin{background:var(--kinu)}
+.origin-grid{display:grid;gap:clamp(40px,5vw,72px);grid-template-columns:1fr}
+@media (min-width:900px){.origin-grid{grid-template-columns:auto 1fr;align-items:start}}
+.vlead{writing-mode:vertical-rl;font-family:var(--disp);font-weight:700;
+  font-size:clamp(20px,2.5vw,28px);letter-spacing:.16em;line-height:1.9;
+  height:clamp(280px,34vw,420px);
+  padding-left:22px;border-left:1px solid var(--sumi-14);
+  margin-inline:auto}
+@media (min-width:900px){.vlead{margin-inline:0}}
+.vlead b{font-weight:800;color:var(--bengara)}
+
+.namecard{margin-top:44px;display:flex;align-items:center;gap:clamp(14px,3vw,34px);flex-wrap:wrap}
+.chip{flex:1 1 200px;min-width:190px;border:1px solid var(--sumi-14);background:var(--shironeri);
+  padding:22px 24px;position:relative}
+.chip.is-kari{color:var(--sumi-55);
+  background-image:repeating-linear-gradient(45deg,rgba(46,74,92,.05) 0 8px,transparent 8px 16px)}
+.chip.is-mana{border-color:var(--bengara);box-shadow:6px 6px 0 rgba(154,59,36,.1)}
+.chip .mono{display:block;margin-bottom:10px;opacity:.6}
+.chip strong{display:block;font-family:var(--disp);font-size:clamp(20px,2.2vw,26px);
+  font-weight:700;letter-spacing:.14em;line-height:1.4}
+.chip small{display:block;margin-top:8px;font-size:12px;letter-spacing:.06em;opacity:.72;line-height:1.9}
+.arrow{flex:0 0 auto;color:var(--bengara);font-family:var(--mono);font-size:20px;letter-spacing:0}
+
+/* ---------- 仕事 ---------- */
+.works{background:var(--shironeri)}
+.job{display:grid;gap:clamp(20px,3vw,48px);grid-template-columns:1fr;
+  padding:clamp(30px,4vw,52px) 0;border-top:1px solid var(--sumi-14)}
+.job:last-of-type{border-bottom:1px solid var(--sumi-14)}
+@media (min-width:880px){
+  .job{grid-template-columns:88px 1.05fr 1fr;align-items:start}
+  .job--rev{grid-template-columns:1fr 88px 1.05fr}
+  .job--rev .job-fig{order:-1}
+}
+.job-no{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--bengara);padding-top:6px}
+.job-ttl{font-family:var(--disp);font-weight:700;font-size:clamp(20px,2.3vw,27px);letter-spacing:.1em;margin-bottom:6px}
+.job-en{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--sumi-55);margin-bottom:18px}
+.job-txt{color:var(--sumi-80);font-size:.92em}
+.job-list{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px}
+.job-list li{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  border:1px solid var(--sumi-14);padding:5px 10px;color:var(--sumi-55);background:var(--kinu)}
+.job-fig{position:relative;overflow:hidden;background:var(--sumi-14);aspect-ratio:4/3}
+.job-fig img{width:100%;height:100%;object-fit:cover;
+  transition:transform 1.2s var(--ease),filter 1.2s var(--ease);filter:grayscale(.35) contrast(1.03)}
+.job:hover .job-fig img{transform:scale(1.045);filter:grayscale(0) contrast(1.05)}
+.job-fig::after{content:"";position:absolute;left:12px;top:12px;width:34px;height:34px;
+  border-left:1px solid rgba(245,242,236,.85);border-top:1px solid rgba(245,242,236,.85)}
+
+/* ---------- 対応領域 ---------- */
+.scope{margin-top:clamp(48px,6vw,80px);border:1px solid var(--sumi-14);padding:clamp(24px,3.4vw,40px);background:var(--kinu)}
+.scope h3{font-family:var(--disp);font-size:16px;letter-spacing:.14em;font-weight:700;margin-bottom:18px}
+.scope-tags{display:flex;flex-wrap:wrap;gap:10px}
+.scope-tags li{font-size:12px;letter-spacing:.08em;padding:7px 14px;border-radius:999px;
+  border:1px solid var(--aizumi-30);color:var(--aizumi)}
+
+/* ---------- 工程 ---------- */
+.flow-grid{display:grid;gap:0;grid-template-columns:1fr}
+@media (min-width:760px){.flow-grid{grid-template-columns:repeat(5,1fr)}}
+.step{position:relative;padding:34px 20px 34px 0;border-top:1px solid rgba(233,229,221,.22)}
+@media (min-width:760px){.step{padding:38px 18px 46px 0}}
+.step::before{content:"";position:absolute;left:0;top:-1px;width:0;height:2px;background:var(--hinoki);
+  transition:width 1s var(--ease)}
+.step.is-in::before{width:34px}
+.step-no{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--hinoki);margin-bottom:16px}
+.step-ttl{font-family:var(--disp);font-weight:700;font-size:clamp(17px,1.7vw,20px);letter-spacing:.1em;margin-bottom:12px}
+.step-txt{font-size:.86em;line-height:2;color:rgba(233,229,221,.68)}
+
+/* ---------- 実績（仮名 → 真名 スライダー） ---------- */
+.cases{background:var(--kinu)}
+.case-grid{display:grid;gap:clamp(26px,3.2vw,40px);grid-template-columns:1fr}
+@media (min-width:820px){.case-grid{grid-template-columns:repeat(3,1fr)}}
+.case{background:var(--shironeri);border:1px solid var(--sumi-14)}
+.ba{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--sumi-14);touch-action:pan-y;cursor:ew-resize}
+.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ba-after{filter:saturate(1.02) contrast(1.03)}
+.ba-before{clip-path:inset(0 calc(100% - var(--pos,50%)) 0 0);
+  filter:grayscale(1) brightness(1.12) contrast(.86)}
+.ba-blue{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--pos,50%)) 0 0);
+  background-image:
+    linear-gradient(rgba(46,74,92,.28),rgba(46,74,92,.28)),
+    repeating-linear-gradient(0deg,rgba(245,242,236,.28) 0 1px,transparent 1px 26px),
+    repeating-linear-gradient(90deg,rgba(245,242,236,.28) 0 1px,transparent 1px 26px);
+  pointer-events:none}
+.ba-handle{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:2px;background:var(--bengara);
+  transform:translateX(-1px);pointer-events:none}
+.ba-handle::after{content:"";position:absolute;top:50%;left:50%;width:34px;height:34px;
+  transform:translate(-50%,-50%) rotate(45deg);background:var(--bengara);
+  box-shadow:0 0 0 4px rgba(233,229,221,.5)}
+.ba-tag{position:absolute;bottom:10px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;
+  padding:4px 9px;background:rgba(22,24,26,.72);color:var(--kinu);pointer-events:none}
+.ba-tag.l{left:10px}
+.ba-tag.r{right:10px;background:rgba(154,59,36,.85)}
+.case-body{padding:22px 22px 26px}
+.case-body .mono{color:var(--bengara);margin-bottom:9px}
+.case-ttl{font-family:var(--disp);font-weight:700;font-size:17px;letter-spacing:.08em;margin-bottom:10px}
+.case-txt{font-size:.86em;color:var(--sumi-80);line-height:1.95}
+.note{margin-top:26px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--sumi-55)}
+
+/* ---------- 代表メッセージ ---------- */
+.msg{background:var(--sumi);color:var(--kinu);position:relative;overflow:hidden}
+.msg-inner{display:grid;gap:clamp(34px,5vw,64px);grid-template-columns:1fr}
+@media (min-width:900px){.msg-inner{grid-template-columns:1fr auto;align-items:center}}
+.msg .vlead{border-left-color:rgba(233,229,221,.22)}
+.msg .wrap{width:min(100% - var(--pad)*2, 1340px)}
+.msg .txt{color:rgba(233,229,221,.72);max-width:68ch}
+.msg-sign{margin-top:34px;display:flex;align-items:baseline;gap:14px}
+.msg-sign .mono{color:var(--hinoki)}
+.msg-sign strong{font-family:var(--disp);font-size:22px;font-weight:700;letter-spacing:.22em}
+.msg-fig{width:min(100%,340px);justify-self:center}
+.msg-fig img{aspect-ratio:3/4;object-fit:cover;filter:grayscale(.6) brightness(.85)}
+
+/* ---------- 概要 ---------- */
+.profile{background:var(--shironeri)}
+.p-grid{display:grid;gap:clamp(34px,4.5vw,64px);grid-template-columns:1fr}
+@media (min-width:900px){.p-grid{grid-template-columns:1.1fr .9fr}}
+.dl{border-top:1px solid var(--sumi-14)}
+.dl > div{display:grid;grid-template-columns:1fr;gap:2px;padding:18px 2px;border-bottom:1px solid var(--sumi-14)}
+@media (min-width:560px){.dl > div{grid-template-columns:150px 1fr;gap:20px;align-items:baseline}}
+.dl dt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--sumi-55);padding-top:5px}
+.dl dd{font-size:.94em;line-height:1.95}
+.dl dd small{display:block;font-size:11px;color:var(--sumi-55);letter-spacing:.06em;margin-top:4px}
+.p-fig{position:relative}
+.p-fig img{aspect-ratio:1/1;object-fit:cover;filter:grayscale(.4)}
+.p-fig figcaption{margin-top:12px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--sumi-55)}
+
+/* ---------- フッター ---------- */
+.ft{background:var(--sumi);color:var(--kinu);padding:clamp(56px,7vw,90px) 0 34px}
+.ft-top{display:flex;justify-content:space-between;gap:34px;flex-wrap:wrap;align-items:flex-end}
+.ft-mark{font-family:var(--disp);font-weight:800;font-size:clamp(30px,5.6vw,58px);letter-spacing:.1em;line-height:1.2}
+.ft-mark span{color:var(--bengara)}
+.ft-nav{display:flex;flex-wrap:wrap;gap:8px 26px}
+.ft-nav a{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:rgba(233,229,221,.7)}
+.ft-nav a:hover{color:var(--hinoki)}
+.ft-bottom{margin-top:44px;padding-top:20px;border-top:1px solid rgba(233,229,221,.16);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.ft-bottom p{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:rgba(233,229,221,.5)}
+
+/* ---------- スクロール演出 ---------- */
+.rv{opacity:0;transform:translateY(26px);
+  transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.rv.is-in{opacity:1;transform:none}
+.rv[data-d="1"]{transition-delay:.12s}
+.rv[data-d="2"]{transition-delay:.24s}
+.rv[data-d="3"]{transition-delay:.36s}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;
+    transition-duration:.001ms !important}
+  .rv{opacity:1;transform:none}
+  .hero-bg img{opacity:1;transform:none}
+  .hero-plan path,.hero-plan line,.hero-plan rect{stroke-dashoffset:0}
+  .hero-plan .dot{opacity:1}
+  .step::before{width:34px}
+}
+</style>
+</head>
+<body>
+
+<!-- 左端の寸法レール -->
+<div class="rail" aria-hidden="true">
+  <div class="rail-ink" id="railInk"></div>
+</div>
+
+<header class="hd" id="hd">
+  <a class="brand" href="#top" aria-label="MANA.com ホーム">
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <rect x=".5" y=".5" width="31" height="31" fill="none" stroke="currentColor" stroke-opacity=".45"/>
+      <path d="M7 23V9l9 7 9-7v14" fill="none" stroke="#9A3B24" stroke-width="1.6"/>
+    </svg>
+    <b>MANA.com</b><span>内装</span>
+  </a>
+  <nav class="nav" aria-label="メインナビゲーション">
+    <a href="#origin">ORIGIN</a>
+    <a href="#works">WORKS</a>
+    <a href="#flow">FLOW</a>
+    <a href="#cases">CASES</a>
+    <a href="#profile">PROFILE</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" aria-label="MANA.com">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=80"
+           alt="仕上げを終えた住宅の内装" loading="eager" decoding="async"
+           onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-hero/2000/1250';">
+    </div>
+
+    <!-- 墨出し線（レイアウト・ライン） -->
+    <svg class="hero-plan" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"
+         fill="none" stroke="#C2A079" stroke-width="1" opacity=".55">
+      <rect x="120" y="130" width="1200" height="640" style="--len:3700;animation-delay:.2s" stroke-opacity=".5"/>
+      <line x1="120" y1="470" x2="1320" y2="470" style="--len:1200;animation-delay:.8s" stroke-opacity=".35"/>
+      <line x1="760" y1="130" x2="760" y2="770" style="--len:640;animation-delay:1s" stroke-opacity=".35"/>
+      <path d="M120 300 H 420 V 130" style="--len:470;animation-delay:1.2s" stroke="#9A3B24" stroke-opacity=".8"/>
+      <path d="M1320 640 H 1020 V 770" style="--len:430;animation-delay:1.35s" stroke="#9A3B24" stroke-opacity=".8"/>
+      <line x1="120" y1="96" x2="420" y2="96" style="--len:300;animation-delay:1.6s" stroke-opacity=".45"/>
+      <line x1="120" y1="86" x2="120" y2="106" style="--len:20;animation-delay:1.7s" stroke-opacity=".45"/>
+      <line x1="420" y1="86" x2="420" y2="106" style="--len:20;animation-delay:1.7s" stroke-opacity=".45"/>
+      <circle class="dot" cx="760" cy="470" r="4" fill="#9A3B24" stroke="none" style="animation-delay:1.9s"/>
+    </svg>
+
+    <div class="hero-inner">
+      <div class="hero-grid">
+        <h1 class="hero-ttl">
+          <span class="seal">真名</span>を、<br>その<em>空間</em>に。
+        </h1>
+        <div class="hero-side">
+          <p class="mono">MANA.com — Interior Works &amp; Consulting / Fukuoka</p>
+          <p>まだ「部屋」としか呼ばれていない場所に、その空間だけの名前をつける。福岡を拠点に、一般宅と法人物件の内装工事、そして内装コンサルティングを行っています。</p>
+          <div class="hero-meta">
+            <span>住宅内装</span><span>法人内装</span><span>内装コンサルティング</span><span>福岡市南区皿山</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scroller" aria-hidden="true">SCROLL</div>
+  </section>
+
+  <!-- ============ 由来 ============ -->
+  <section class="sec origin" id="origin">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="sec-num">01</span>
+        <h2 class="sec-ttl">屋号の由来</h2>
+        <span class="sec-en">Origin</span>
+      </div>
+
+      <div class="origin-grid">
+        <p class="vlead rv">仮名（かりな）のままの部屋を<b>真名（まな）</b>にする。</p>
+
+        <div>
+          <p class="txt rv" data-d="1">日本語には、仮の名である「仮名」と、そのものの本当の名である「真名」という考え方があります。引き渡されたばかりの部屋、使われ方が変わった店舗、誰かが出ていったあとの空き室。そうした空間は、まだ仮の名で呼ばれている状態だと考えています。</p>
+          <p class="txt rv" data-d="2">MANA.com は、代表・真名子泰久の名前から生まれた屋号です。壁を張り替え、床を替え、光の当たり方と手の触れる位置を整えていく。その積み重ねの先に、「ここは、こういう場所だ」と誰もが言える状態が現れます。それが、私たちの言う真名です。</p>
+          <p class="txt rv" data-d="3">図面の前に、まず住む人と働く人の話を聞く。仕上げ材の名前より先に、その空間で何が起きるかを決める。内装工事とコンサルティングの両方を手がけているのは、その順番を守るためです。</p>
+
+          <div class="namecard">
+            <div class="chip is-kari rv" data-d="1">
+              <span class="mono">Before</span>
+              <strong>仮名</strong>
+              <small>用途も印象も定まっていない状態。図面上は「洋室」「区画」としか呼べない。</small>
+            </div>
+            <div class="arrow rv" data-d="2" aria-hidden="true">→</div>
+            <div class="chip is-mana rv" data-d="3">
+              <span class="mono">After</span>
+              <strong>真名</strong>
+              <small>使う人の言葉で説明できる空間。「家族が集まる土間」「相談を受ける部屋」。</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 仕事 ============ -->
+  <section class="sec works" id="works">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="sec-num">02</span>
+        <h2 class="sec-ttl">三つの仕事</h2>
+        <span class="sec-en">Works</span>
+      </div>
+
+      <article class="job rv">
+        <div class="job-no">W-01</div>
+        <div>
+          <h3 class="job-ttl">住まいの内装</h3>
+          <p class="job-en">Residential Interior</p>
+          <p class="job-txt">一般宅の内装工事全般。クロス・床材の張り替えから、間仕切りの造作、収納の見直しまで。生活動線を一度分解し、日々の手の動きに合わせて材と寸法を決めていきます。長く住むほど手になじむことを基準に選定します。</p>
+          <ul class="job-list">
+            <li>クロス張替</li><li>床材施工</li><li>造作・建具</li><li>間仕切り</li><li>原状回復</li>
+          </ul>
+        </div>
+        <figure class="job-fig">
+          <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80"
+               alt="住宅のリビング内装" loading="lazy" decoding="async"
+               onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-w1/1200/900';">
+        </figure>
+      </article>
+
+      <article class="job job--rev rv">
+        <div class="job-no">W-02</div>
+        <div>
+          <h3 class="job-ttl">法人物件の内装</h3>
+          <p class="job-en">Commercial Interior</p>
+          <p class="job-txt">オフィス・店舗・テナント区画の内装施工。営業を止めない工程の組み方、共用部の養生、近隣への配慮までを含めて計画します。ブランドの見え方と、そこで働く人の使い勝手。その両方が成立する線を探します。</p>
+          <ul class="job-list">
+            <li>オフィス</li><li>店舗</li><li>テナント区画</li><li>サイン・什器まわり</li><li>夜間・分割施工</li>
+          </ul>
+        </div>
+        <figure class="job-fig">
+          <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80"
+               alt="オフィスの内装" loading="lazy" decoding="async"
+               onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-w2/1200/900';">
+        </figure>
+      </article>
+
+      <article class="job rv">
+        <div class="job-no">W-03</div>
+        <div>
+          <h3 class="job-ttl">内装コンサルティング</h3>
+          <p class="job-en">Interior Consulting</p>
+          <p class="job-txt">工事の前段階から関わる仕事です。物件選定時の下見同行、用途に対する内装の妥当性の判断、予算配分と優先順位づけ、仕様の比較検討。つくらない・直さないという判断も含めて、事業と暮らしに必要な範囲を一緒に見極めます。</p>
+          <ul class="job-list">
+            <li>物件下見同行</li><li>用途適合の判断</li><li>予算配分</li><li>仕様比較</li><li>工程計画</li>
+          </ul>
+        </div>
+        <figure class="job-fig">
+          <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80"
+               alt="図面と打ち合わせ" loading="lazy" decoding="async"
+               onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-w3/1200/900';">
+        </figure>
+      </article>
+
+      <div class="scope rv">
+        <h3>対応する空間</h3>
+        <ul class="scope-tags">
+          <li>戸建て住宅</li><li>マンション住戸</li><li>賃貸原状回復</li><li>オフィス</li>
+          <li>物販店舗</li><li>飲食店舗</li><li>サロン・スタジオ</li><li>事務所併用住宅</li>
+        </ul>
+        <p class="note">※ 個人のお客様、法人のお客様どちらもお受けしています。同業者様との協業・応援施工についても随時ご相談を承っています。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 工程 ============ -->
+  <section class="sec sec--dark" id="flow">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="sec-num">03</span>
+        <h2 class="sec-ttl">仕事の順番</h2>
+        <span class="sec-en">Flow</span>
+      </div>
+      <p class="lead rv" style="margin-bottom:clamp(38px,5vw,60px);max-width:34ch">名前がつくまでには、<br>五つの段階があります。</p>
+
+      <div class="flow-grid">
+        <div class="step rv">
+          <p class="step-no">STEP 01</p>
+          <h3 class="step-ttl">現地調査</h3>
+          <p class="step-txt">寸法を実測し、下地・設備・既存の傷みを確認します。同時に、その空間で何をしたいのかを伺います。</p>
+        </div>
+        <div class="step rv" data-d="1">
+          <p class="step-no">STEP 02</p>
+          <h3 class="step-ttl">計画と見積</h3>
+          <p class="step-txt">用途に対する妥当な仕様を組み、内訳を開示した見積を作成。優先順位と予算配分をすり合わせます。</p>
+        </div>
+        <div class="step rv" data-d="2">
+          <p class="step-no">STEP 03</p>
+          <h3 class="step-ttl">墨出し・下地</h3>
+          <p class="step-txt">床と壁に基準線を打ち、仕上がりの位置を確定。見えなくなる下地こそ、最終的な精度を決めます。</p>
+        </div>
+        <div class="step rv" data-d="3">
+          <p class="step-no">STEP 04</p>
+          <h3 class="step-ttl">仕上げ</h3>
+          <p class="step-txt">クロス・床材・建具・造作を施工。光の入り方を見ながら、色と質感の最終判断を現場で行います。</p>
+        </div>
+        <div class="step rv" data-d="3">
+          <p class="step-no">STEP 05</p>
+          <h3 class="step-ttl">引渡し・点検</h3>
+          <p class="step-txt">清掃と手直しを終え、使い方と手入れ方法を共有。引渡し後の状態も一定期間見守ります。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 実績 ============ -->
+  <section class="sec cases" id="cases">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="sec-num">04</span>
+        <h2 class="sec-ttl">仮名から真名へ</h2>
+        <span class="sec-en">Cases</span>
+      </div>
+      <!-- <p class="txt rv" style="margin-bottom:clamp(30px,4vw,48px)">中央の線を左右に動かすと、仮名の状態（左）と真名の状態（右）を見比べられます。</p> -->
+
+      <div class="case-grid">
+
+        <article class="case rv">
+          <div class="ba" data-ba tabindex="0" role="slider" aria-label="施工前後の比較：戸建て住宅リビング"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="施工前 50%" style="--pos:50%">
+            <img class="ba-after" src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80"
+                 alt="施工後のリビング" loading="lazy" decoding="async"
+                 onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-c1/1200/900';">
+            <img class="ba-before" src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80"
+                 alt="" aria-hidden="true" loading="lazy" decoding="async"
+                 onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-c1/1200/900';">
+            <div class="ba-blue"></div>
+            <div class="ba-handle"></div>
+            <span class="ba-tag l">仮名</span><span class="ba-tag r">真名</span>
+          </div>
+          <div class="case-body">
+            <p class="mono">Residential / 福岡市</p>
+            <h3 class="case-ttl">家族が集まる土間のある家</h3>
+            <p class="case-txt">玄関と居間の境をなくし、土足で入れる余白をつくった住宅。既存の梁を見せ、壁は明るい塗り調のクロスで統一しました。</p>
+          </div>
+        </article>
+
+        <article class="case rv" data-d="1">
+          <div class="ba" data-ba tabindex="0" role="slider" aria-label="施工前後の比較：オフィス"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="施工前 50%" style="--pos:50%">
+            <img class="ba-after" src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80"
+                 alt="施工後の打ち合わせスペース" loading="lazy" decoding="async"
+                 onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-c2/1200/900';">
+            <img class="ba-before" src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80"
+                 alt="" aria-hidden="true" loading="lazy" decoding="async"
+                 onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-c2/1200/900';">
+            <div class="ba-blue"></div>
+            <div class="ba-handle"></div>
+            <span class="ba-tag l">仮名</span><span class="ba-tag r">真名</span>
+          </div>
+          <div class="case-body">
+            <p class="mono">Commercial / テナント区画</p>
+            <h3 class="case-ttl">相談を受けるための部屋</h3>
+            <p class="case-txt">来客と作業が同居していた事務所を、半個室の相談席と執務エリアに分割。音の抜けを抑える建具を選定しました。</p>
+          </div>
+        </article>
+
+        <article class="case rv" data-d="2">
+          <div class="ba" data-ba tabindex="0" role="slider" aria-label="施工前後の比較：店舗"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="施工前 50%" style="--pos:50%">
+            <img class="ba-after" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80"
+                 alt="施工後の店舗内装" loading="lazy" decoding="async"
+                 onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-c3/1200/900';">
+            <img class="ba-before" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80"
+                 alt="" aria-hidden="true" loading="lazy" decoding="async"
+                 onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-c3/1200/900';">
+            <div class="ba-blue"></div>
+            <div class="ba-handle"></div>
+            <span class="ba-tag l">仮名</span><span class="ba-tag r">真名</span>
+          </div>
+          <div class="case-body">
+            <p class="mono">Commercial / 物販店舗</p>
+            <h3 class="case-ttl">奥まで歩きたくなる店</h3>
+            <p class="case-txt">間口の狭い区画で、什器の高さと照度を奥に向かって変化させ、視線が自然に奥へ抜ける構成に変更しました。</p>
+          </div>
+        </article>
+
+      </div>
+      <p class="note">※ 掲載している写真はイメージです。実際の施工事例写真への差し替えを想定しています。</p>
+    </div>
+  </section>
+
+  <!-- ============ 代表メッセージ ============ -->
+  <section class="sec msg">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="sec-num">05</span>
+        <h2 class="sec-ttl">代表より</h2>
+        <span class="sec-en">Message</span>
+      </div>
+      <div class="msg-inner">
+        <div>
+          <p class="vlead rv">きれいにするのではなく、<br>その場所らしくする。</p>
+          <div style="margin-top:34px">
+            <p class="txt rv" data-d="1">内装の仕事を続けてきて確かだと思うのは、良い空間は流行では決まらないということです。誰がどう使うかが先にあって、材と寸法はその後についてきます。だから私は、図面より先に話を聞く時間を長く取ります。</p>
+            <p class="txt rv" data-d="2">個人のお客様も、法人のお客様も、初めてお会いする方がほとんどです。ひとつずつ現場を重ね、引き渡した空間がその後どう使われているかを見に行く。その繰り返しが、次の仕事の判断材料になっています。</p>
+            <div class="msg-sign rv" data-d="3">
+              <span class="mono">MANA.com 代表</span>
+              <strong>真名子 泰久</strong>
+            </div>
+          </div>
+        </div>
+        <figure class="msg-fig rv" data-d="2">
+          <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=80"
+               alt="現場での作業の様子" loading="lazy" decoding="async"
+               onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-msg/900/1200';">
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 概要 ============ -->
+  <section class="sec profile" id="profile">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="sec-num">06</span>
+        <h2 class="sec-ttl">事業概要</h2>
+        <span class="sec-en">Profile</span>
+      </div>
+
+      <div class="p-grid">
+        <dl class="dl rv">
+          <div><dt>屋号</dt><dd>MANA.com（マナドットコム）</dd></div>
+          <div><dt>代表者</dt><dd>真名子 泰久</dd></div>
+          <div><dt>所在地</dt><dd>〒811-1365<br>福岡県福岡市南区皿山</dd></div>
+          <div><dt>事業内容</dt><dd>
+            一般宅ならびに法人向けの内装業務<br>
+            内装に関するコンサルティング<br>
+            一般顧客および法人顧客の新規開拓
+          </dd></div>
+          <div><dt>対応エリア</dt><dd>福岡市および近郊<small>※ エリア範囲は要確認・要修正</small></dd></div>
+          <div><dt>営業時間</dt><dd>平日 9:00 – 18:00<small>※ 仮の記載です。実際の内容に差し替えてください</small></dd></div>
+          <!--
+          <div><dt>許認可</dt><dd>—<small>※ 建設業許可・登録番号等がある場合はこちらに記載</small></dd></div>
+          -->
+        </dl>
+
+        <figure class="p-fig rv" data-d="1">
+          <img src="https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1000&q=80"
+               alt="仕上げ材と道具" loading="lazy" decoding="async"
+               onerror="this.onerror=null;this.src='https://picsum.photos/seed/mana-profile/1000/1000';">
+          <figcaption>MATERIALS &amp; TOOLS — FUKUOKA</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-top">
+      <p class="ft-mark">MANA<span>.</span>com</p>
+      <nav class="ft-nav" aria-label="フッターナビゲーション">
+        <a href="#origin">ORIGIN</a>
+        <a href="#works">WORKS</a>
+        <a href="#flow">FLOW</a>
+        <a href="#cases">CASES</a>
+        <a href="#profile">PROFILE</a>
+      </nav>
+    </div>
+    <div class="ft-bottom">
+      <p>INTERIOR WORKS &amp; CONSULTING / FUKUOKA</p>
+      <p>&copy; <span id="yr">2026</span> MANA.com — Yasuhisa Manago</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* 年号 */
+  var yr = document.getElementById("yr");
+  if(yr){ yr.textContent = new Date().getFullYear(); }
+
+  /* ヘッダーの背景切替 */
+  var hd = document.getElementById("hd");
+  function onScrollHeader(){
+    if(window.scrollY > window.innerHeight * 0.78){ hd.classList.add("is-solid"); }
+    else{ hd.classList.remove("is-solid"); }
+  }
+
+  /* 左端レール（スクロール進捗＋目盛り） */
+  var ink = document.getElementById("railInk");
+  var rail = document.querySelector(".rail");
+  if(rail){
+    ["01 ORIGIN","02 WORKS","03 FLOW","04 CASES","05 MESSAGE","06 PROFILE"].forEach(function(t,i){
+      var top = 14 + i * 14;
+      var tick = document.createElement("div");
+      tick.className = "rail-tick"; tick.style.top = top + "%";
+      var lab = document.createElement("div");
+      lab.className = "rail-lab"; lab.style.top = top + "%"; lab.textContent = t;
+      rail.appendChild(tick); rail.appendChild(lab);
+    });
+  }
+  function onScrollRail(){
+    if(!ink) return;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var p = h > 0 ? (window.scrollY / h) : 0;
+    ink.style.height = (p * 100) + "%";
+  }
+
+  var ticking = false;
+  window.addEventListener("scroll", function(){
+    if(ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function(){
+      onScrollHeader(); onScrollRail(); ticking = false;
+    });
+  }, {passive:true});
+  onScrollHeader(); onScrollRail();
+
+  /* スクロール・リビール */
+  var targets = document.querySelectorAll(".rv, .step");
+  if("IntersectionObserver" in window && !reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add("is-in"); io.unobserve(e.target); }
+      });
+    }, {threshold:0.15, rootMargin:"0px 0px -8% 0px"});
+    targets.forEach(function(el){ io.observe(el); });
+  }else{
+    targets.forEach(function(el){ el.classList.add("is-in"); });
+  }
+
+  /* 仮名 ⇄ 真名 スライダー */
+  document.querySelectorAll("[data-ba]").forEach(function(ba){
+    var dragging = false;
+
+    function set(pct){
+      pct = Math.max(0, Math.min(100, pct));
+      ba.style.setProperty("--pos", pct + "%");
+      ba.setAttribute("aria-valuenow", Math.round(pct));
+      ba.setAttribute("aria-valuetext", "仮名の表示範囲 " + Math.round(pct) + "%");
+    }
+    function fromEvent(e){
+      var r = ba.getBoundingClientRect();
+      var x = (e.clientX !== undefined ? e.clientX : 0) - r.left;
+      set((x / r.width) * 100);
+    }
+
+    ba.addEventListener("pointerdown", function(e){
+      dragging = true;
+      if(ba.setPointerCapture){ try{ ba.setPointerCapture(e.pointerId); }catch(err){} }
+      fromEvent(e);
+    });
+    ba.addEventListener("pointermove", function(e){ if(dragging){ fromEvent(e); } });
+    ["pointerup","pointercancel","pointerleave"].forEach(function(t){
+      ba.addEventListener(t, function(){ dragging = false; });
+    });
+
+    ba.addEventListener("keydown", function(e){
+      var cur = parseFloat(ba.getAttribute("aria-valuenow")) || 50;
+      var step = e.shiftKey ? 10 : 4;
+      if(e.key === "ArrowLeft" || e.key === "ArrowDown"){ set(cur - step); e.preventDefault(); }
+      else if(e.key === "ArrowRight" || e.key === "ArrowUp"){ set(cur + step); e.preventDefault(); }
+      else if(e.key === "Home"){ set(0); e.preventDefault(); }
+      else if(e.key === "End"){ set(100); e.preventDefault(); }
+    });
+
+    /* 初回表示時に一度だけ、線が走る導入動作 */
+    if(!reduce && "IntersectionObserver" in window){
+      var seen = false;
+      var io2 = new IntersectionObserver(function(en){
+        en.forEach(function(e){
+          if(e.isIntersecting && !seen){
+            seen = true; io2.unobserve(ba);
+            var start = null, from = 88, to = 46, dur = 1100;
+            function step(ts){
+              if(!start) start = ts;
+              var t = Math.min(1, (ts - start) / dur);
+              var eased = 1 - Math.pow(1 - t, 3);
+              set(from + (to - from) * eased);
+              if(t < 1){ requestAnimationFrame(step); }
+            }
+            set(from);
+            requestAnimationFrame(step);
+          }
+        });
+      }, {threshold:0.4});
+      io2.observe(ba);
+    }
+  });
+})();
+</script>
+</body>
+</html>
